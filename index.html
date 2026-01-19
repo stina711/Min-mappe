@@ -109,6 +109,36 @@ const lessons = [
         question: "Fullfør setningen: Je ___ étudiant.",
         answers: ["es", "suis", "est"],
         correct: 1
+    },
+    {
+        rule: "Passé composé – avoir (å ha):<br>j'ai, tu as, il/elle a",
+        question: "Fullfør setningen: Nous ___ mangé.",
+        answers: ["avons", "êtes", "ont"],
+        correct: 0
+    },
+    {
+        rule: "Refleksive verb – se laver (å vaske seg):<br>je me lave, tu te laves, il/elle se lave",
+        question: "Fullfør setningen: Ils ___ réveillés tard.",
+        answers: ["se sont", "se sont lavés", "se"],
+        correct: 0
+    },
+    {
+        rule: "Futur proche (nær fremtid):<br>aller + infinitiv – je vais, tu vas, il/elle va",
+        question: "Hva er riktig setning: Nous ___ manger ce soir.",
+        answers: ["allons", "sommes", "avons"],
+        correct: 0
+    },
+    {
+        rule: "Direkte objektspronomen: <br><b>me/m'</b>, <b>te/t'</b>, <b>le/la/l'</b>, <b>nous</b>, <b>vous</b>, <b>les</b>",
+        question: "Fullfør setningen: Il ___ voit souvent.",
+        answers: ["nous", "les", "le"],
+        correct: 2
+    },
+    {
+        rule: "Bøyning av verbet <b>faire</b> (å gjøre) i presens: je fais, tu fais, il/elle fait.",
+        question: "Hva er riktig: Tu ___ du sport?",
+        answers: ["fais", "faisons", "fait"],
+        correct: 0
     }
 ];
 
@@ -124,10 +154,12 @@ function loadLesson() {
     const answersDiv = document.getElementById("answers");
     answersDiv.innerHTML = "";
 
-    lesson.answers.forEach((answer, index) => {
+    // Blande alternativene
+    const shuffledAnswers = shuffle(lesson.answers);
+    shuffledAnswers.forEach((answer, index) => {
         const btn = document.createElement("button");
         btn.innerText = answer;
-        btn.onclick = () => checkAnswer(index);
+        btn.onclick = () => checkAnswer(shuffledAnswers.indexOf(answer));
         answersDiv.appendChild(btn);
     });
 
@@ -136,7 +168,9 @@ function loadLesson() {
 
 function checkAnswer(selected) {
     const feedback = document.getElementById("feedback");
-    if (selected === lessons[current].correct) {
+    const correctAnswerIndex = lessons[current].correct;
+
+    if (selected === correctAnswerIndex) {
         feedback.innerText = "Riktig! ✔️";
         feedback.className = "feedback correct";
         points++;
@@ -153,6 +187,15 @@ function checkAnswer(selected) {
             endGame();
         }
     }, 1200);
+}
+
+function shuffle(array) {
+    // Fisher-Yates algoritme for å blande arrayet
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]]; // Bytt plass
+    }
+    return array;
 }
 
 function updateScore() {

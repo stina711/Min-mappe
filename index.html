@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<title>Fransk grammatikk – læringsapp</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        margin: 0;
+        padding: 0;
+    }
+
+    .app {
+        max-width: 700px;
+        margin: 40px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        text-align: center;
+        color: #2c3e50;
+    }
+
+    .rule {
+        background: #eef3f7;
+        padding: 15px;
+        border-left: 5px solid #3498db;
+        margin-bottom: 20px;
+    }
+
+    .question {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+    button {
+        display: block;
+        width: 100%;
+        margin: 8px 0;
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background: #3498db;
+        color: white;
+    }
+
+    button:hover {
+        background: #2980b9;
+    }
+
+    .feedback {
+        margin-top: 15px;
+        font-weight: bold;
+    }
+
+    .correct {
+        color: green;
+    }
+
+    .wrong {
+        color: red;
+    }
+
+    .score {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 16px;
+    }
+</style>
+</head>
+<body>
+
+<div class="app">
+    <h1>🇫🇷 Fransk grammatikk</h1>
+
+    <div class="rule" id="rule"></div>
+
+    <div class="question" id="question"></div>
+
+    <div id="answers"></div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="score" id="score"></div>
+</div>
+
+<script>
+const lessons = [
+    {
+        rule: "Bestemte artikler på fransk:<br><b>le</b> (hankjønn), <b>la</b> (hunkjønn), <b>les</b> (flertall).",
+        question: "Hva er riktig artikkel: ___ livre",
+        answers: ["la", "le", "les"],
+        correct: 1
+    },
+    {
+        rule: "Ubestemte artikler:<br><b>un</b> (hankjønn), <b>une</b> (hunkjønn), <b>des</b> (flertall).",
+        question: "Hva er riktig artikkel: ___ pomme",
+        answers: ["un", "une", "des"],
+        correct: 1
+    },
+    {
+        rule: "Verb i presens – être (å være):<br>je suis, tu es, il/elle est",
+        question: "Fullfør setningen: Je ___ étudiant.",
+        answers: ["es", "suis", "est"],
+        correct: 1
+    }
+];
+
+let current = 0;
+let points = 0;
+
+function loadLesson() {
+    const lesson = lessons[current];
+    document.getElementById("rule").innerHTML = lesson.rule;
+    document.getElementById("question").innerText = lesson.question;
+    document.getElementById("feedback").innerText = "";
+
+    const answersDiv = document.getElementById("answers");
+    answersDiv.innerHTML = "";
+
+    lesson.answers.forEach((answer, index) => {
+        const btn = document.createElement("button");
+        btn.innerText = answer;
+        btn.onclick = () => checkAnswer(index);
+        answersDiv.appendChild(btn);
+    });
+
+    updateScore();
+}
+
+function checkAnswer(selected) {
+    const feedback = document.getElementById("feedback");
+    if (selected === lessons[current].correct) {
+        feedback.innerText = "Riktig! ✔️";
+        feedback.className = "feedback correct";
+        points++;
+    } else {
+        feedback.innerText = "Feil ❌";
+        feedback.className = "feedback wrong";
+    }
+
+    setTimeout(() => {
+        current++;
+        if (current < lessons.length) {
+            loadLesson();
+        } else {
+            endGame();
+        }
+    }, 1200);
+}
+
+function updateScore() {
+    document.getElementById("score").innerText =
+        `Poeng: ${points} / ${lessons.length}`;
+}
+
+function endGame() {
+    document.querySelector(".app").innerHTML = `
+        <h1>Ferdig! 🎉</h1>
+        <p style="text-align:center">
+            Du fikk <b>${points}</b> av <b>${lessons.length}</b> riktige.
+        </p>
+        <button onclick="location.reload()">Prøv igjen</button>
+    `;
+}
+
+loadLesson();
+</script>
+
+</body>
+</html>
